@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CTA BLACK - Los Angeles Application</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   CTA BLACK - LA Application
+   Edit the CONFIG block at the bottom of this file (search
+   "CONFIG") to set your Spline scene URL and Apps Script endpoint.
+   ============================================================ */
+
+:root{
+  --black: #060606;
+  --black2: #0c0c0c;
+  --black3: #121212;
+  --red: #C8102E;
+  --red-bright: #E8173B;
+  --red-dim: rgba(200,16,46,0.35);
+  --red-faint: rgba(200,16,46,0.12);
+  --white: #F4F2EE;
+  --grey: #ADA8A0;
+  --grey-dim: #726D65;
+  --line: rgba(244,242,238,0.09);
+  --serif: 'Cormorant Garamond', serif;
+  --sans: 'Inter', sans-serif;
+  --display: 'Big Shoulders Display', sans-serif;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--sans);
+  overflow-x: hidden;
+}
+
+::selection{ background: var(--red); color: var(--white); }
+
+/* subtle grain / vignette over everything */
+.grain{
+  position: fixed; inset: 0; z-index: 999; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.65) 100%);
+  mix-blend-mode: multiply;
+}
+
+/* ---- Loading screen ---- */
+.loading-screen{
+  position: fixed; inset: 0; z-index: 500;
+  background: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: loaderFadeOut 1s ease forwards;
+  animation-delay: 1.9s;
+}
+.loading-logo{
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(36px, 9vw, 84px);
+  letter-spacing: -2px;
+  text-transform: uppercase;
+  color: var(--white);
+  opacity: 0;
+  animation: loaderTextIn 1s ease forwards;
+  animation-delay: 0.2s;
+}
+@keyframes loaderTextIn{
+  from{ opacity: 0; transform: translateY(10px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+@keyframes loaderFadeOut{
+  to{ opacity: 0; visibility: hidden; pointer-events: none; }
+}
+
+a{ color: inherit; text-decoration:none; }
+button{ font-family: inherit; cursor: pointer; }
+input, textarea{ font-family: inherit; }
+
+.eyebrow{
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+.eyebrow.faint{ color: var(--grey-dim); letter-spacing: 4px; }
+
+/* ============================================================
+   TOP MARK
+   ============================================================ */
+.mark{
+  position: fixed;
+  top: 26px; left: 32px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.95;
+}
+.mark-logo{
+  width: 28px;
+  height: 28px;
+  display: block;
+  object-fit: contain;
+}
+.mark-text{
+  font-family: var(--display);
+  font-weight: 900;
+  font-stretch: 100%;
+  font-size: 14px;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--white);
+  display: inline-block;
+  transform: scaleY(1.15);
+}
+
+/* ============================================================
+   STAGE - all screens live here, one visible at a time
+   ============================================================ */
+.stage{
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  min-height: 640px;
+  overflow: hidden;
+}
+
+.screen{
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  align-items: safe center;
+  justify-content: center;
+  padding: 120px 32px 80px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(14px);
+  transition: opacity .8s ease, transform .8s ease, visibility .8s;
+  pointer-events: none;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.screen.active{
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ---- Reveal / fade-in for text entering a screen ---- */
+.hero-content > *, .form-card > *{ opacity: 0; }
+@keyframes fadeUp{
+  from{ opacity: 0; transform: translateY(18px); }
+  to{ opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUpStretched{
+  from{ opacity: 0; transform: translateY(18px) scaleY(1.18); }
+  to{ opacity: 1; transform: translateY(0) scaleY(1.18); }
+}
+.reveal-play{
+  animation: fadeUp 1.1s cubic-bezier(.16,1,.3,1) forwards;
+}
+.hero-content h1.reveal-play,
+.form-card h2.reveal-play{
+  animation-name: fadeUpStretched;
+}
+
+/* ============================================================
+   HERO SCREEN - flat black + animated wave strings
+   ============================================================ */
+#screen-hero{ padding: 0; }
+
+.waves-bg{
+  position: absolute; inset: 0; z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.waves-overlay{
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  height: 200px;
+  transform: translateY(-50%);
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.wave-line{
+  position: absolute;
+  top: 0; left: 0;
+  width: 200%;
+  height: 100%;
+}
+.wave-line path{ fill: none; }
+.wave-1 path{ stroke: rgba(244,242,238,0.09); stroke-width: 1.5; }
+.wave-2 path{ stroke: rgba(244,242,238,0.055); stroke-width: 1.5; }
+.wave-3 path{ stroke: rgba(244,242,238,0.04); stroke-width: 1; }
+.wave-accent path{ stroke: var(--red-bright); stroke-width: 2; opacity: 0.4; }
+
+.wave-1{ animation: waveDrift 24s linear infinite; }
+.wave-2{ animation: waveDrift 34s linear infinite reverse; }
+.wave-3{ animation: waveDrift 44s linear infinite; }
+.wave-accent{ animation: waveDrift 19s linear infinite; }
+
+@keyframes waveDrift{
+  from{ transform: translateX(0); }
+  to{ transform: translateX(-50%); }
+}
+
+.hero-content{
+  position: relative; z-index: 2;
+  max-width: 780px;
+  padding: 0 24px;
+  text-align: center;
+}
+.hero-content .eyebrow{ margin-bottom: 22px; }
+.hero-content h1{
+  font-family: var(--display);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(32px, 5.8vw, 60px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  margin-bottom: 22px;
+}
+.hero-content h1 em{
+  font-style: normal;
+  color: var(--white);
+  display: inline-block;
+  white-space: nowrap;
+  font-size: clamp(20px, 8vw, 60px);
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+.hero-sub{
+  position: relative;
+  font-size: 15px;
+  color: var(--grey);
+  line-height: 1.8;
+  max-width: 520px;
+  margin: 0 auto 40px;
+  letter-spacing: 0.2px;
+  padding: 12px 18px;
+}
+.hero-sub::before{
+  content: "";
+  position: absolute;
+  inset: -18px -6px;
+  z-index: -1;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(6,6,6,0.4);
+  -webkit-mask-image: radial-gradient(ellipse 85% 78% at center, black 30%, transparent 82%);
+  mask-image: radial-gradient(ellipse 85% 78% at center, black 30%, transparent 82%);
+}
+.hero-facts{
+  position: relative;
+  display:flex; justify-content:center; align-items:center; gap: 30px; flex-wrap: wrap;
+  margin-bottom: 44px;
+  padding: 8px 16px;
+}
+.hero-facts::before{
+  content: "";
+  position: absolute;
+  inset: -14px -8px;
+  z-index: -1;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(6,6,6,0.32);
+  -webkit-mask-image: radial-gradient(ellipse 85% 75% at center, black 30%, transparent 82%);
+  mask-image: radial-gradient(ellipse 85% 75% at center, black 30%, transparent 82%);
+}
+.hero-fact{
+  font-size: 10.5px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--grey);
+}
+.hero-fact b{ color: var(--white); font-weight: 600; }
+
+/* ---- Spots-remaining odometer ---- */
+.spots-fact{
+  display: flex; align-items: baseline; gap: 6px;
+}
+.spots-odometer{
+  display: inline-flex;
+  gap: 0.5px;
+  vertical-align: baseline;
+}
+.od-digit{
+  position: relative;
+  width: 7px;
+  height: 13px;
+  overflow: hidden;
+}
+.od-strip{
+  display: flex;
+  flex-direction: column;
+  transition: transform .4s cubic-bezier(.32,1.15,.4,1);
+  will-change: transform;
+}
+.od-strip span{
+  height: 13px;
+  line-height: 13px;
+  display: block;
+  text-align: center;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0;
+  color: var(--white);
+}
+
+.btn-primary{
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--red);
+  color: var(--white);
+  border: 1px solid var(--red);
+  padding: 17px 34px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: background .2s, transform .15s;
+}
+.btn-primary:hover{ background: var(--red-bright); }
+.btn-primary:active{ transform: scale(0.98); }
+.btn-primary svg{ width: 13px; height: 13px; }
+
+/* ============================================================
+   PROGRESS BAR (application steps)
+   ============================================================ */
+.progress{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  height: 2px;
+  background: var(--line);
+  display: none;
+}
+.progress.show{ display: block; }
+.progress-fill{
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--red), var(--red-bright));
+  transition: width .5s ease;
+}
+.step-label{
+  position: fixed;
+  top: 26px; left: 50%; transform: translateX(-50%);
+  z-index: 60;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--grey);
+  text-transform: uppercase;
+  display: none;
+}
+.step-label.show{ display:block; }
+.step-label b{ color: var(--red-bright); }
+
+/* ============================================================
+   FORM SCREENS
+   ============================================================ */
+.form-card{
+  width: 100%;
+  max-width: 560px;
+}
+.form-card .eyebrow{ margin-bottom: 16px; }
+.form-card h2{
+  font-family: var(--display);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(23px, 3.2vw, 30px);
+  margin-bottom: 14px;
+  line-height: 1.05;
+  text-align: center;
+  letter-spacing: -0.035em;
+}
+.form-card .hint{
+  font-size: 13.5px;
+  color: var(--grey);
+  line-height: 1.7;
+  margin-bottom: 40px;
+  max-width: 460px;
+}
+
+.field{ margin-bottom: 26px; }
+.field label{
+  display:block;
+  font-size: 10.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--grey);
+  margin-bottom: 10px;
+}
+.field input[type=text], .field input[type=email], .field textarea{
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  color: var(--white);
+  font-size: 18px;
+  padding: 10px 2px;
+  outline: none;
+  transition: border-color .25s;
+  font-family: var(--sans);
+}
+.field input[type=text]::placeholder, .field input[type=email]::placeholder, .field textarea::placeholder{
+  color: var(--grey-dim);
+}
+.field input:focus, .field textarea:focus{ border-color: var(--red); }
+.field.with-prefix{ position: relative; }
+.prefix-at{
+  position:absolute; left:2px; bottom: 10px;
+  color: var(--grey-dim); font-size: 18px; pointer-events:none;
+}
+.field.with-prefix input{ padding-left: 16px; }
+
+textarea{ resize: none; min-height: 96px; line-height: 1.6; }
+.char-count{ text-align:right; font-size: 10.5px; color: var(--grey-dim); margin-top: 6px; }
+
+/* choice rows (experience / DAW / attend) - flat, minimal, accent bar on select */
+.choices{ display:grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 8px; }
+.choices.single-col{ grid-template-columns: 1fr; }
+.choice{
+  position: relative;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  padding: 14px 6px 14px 14px;
+  font-size: 13.5px;
+  color: var(--grey);
+  letter-spacing: 0.3px;
+  transition: color .2s, padding-left .2s, border-color .2s;
+  text-align: left;
+}
+.choice::before{
+  content: "";
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--red-bright);
+  transform: scaleY(0);
+  transition: transform .25s ease;
+}
+.choice:hover{ color: var(--white); }
+.choice.selected{
+  color: var(--white);
+  padding-left: 18px;
+  border-color: var(--line);
+}
+.choice.selected::before{ transform: scaleY(1); }
+
+/* slider */
+.slider-wrap{ margin-top: 6px; }
+.slider-value{
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 48px;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+.slider-value span{ font-size: 20px; color: var(--grey); }
+input[type=range]{
+  -webkit-appearance: none;
+  width: 100%;
+  height: 2px;
+  background: var(--line);
+  outline: none;
+  margin: 18px 0 6px;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--red-bright);
+  cursor: pointer;
+  margin-top: -6px;
+}
+input[type=range]::-moz-range-thumb{
+  width: 14px; height: 14px; border: none; border-radius: 50%;
+  background: var(--red-bright); cursor:pointer;
+}
+input[type=range]::-webkit-slider-runnable-track{ height:2px; background: var(--line); }
+.slider-labels{ display:flex; justify-content:space-between; font-size: 10px; letter-spacing: 1.5px; color: var(--grey-dim); text-transform:uppercase; }
+
+/* review screen */
+.review-list{ border-top: 1px solid var(--line); margin-bottom: 34px; }
+.review-row{
+  display:flex; justify-content: space-between; gap: 24px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line);
+}
+.review-row .k{ font-size: 10.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--grey); flex-shrink:0; }
+.review-row .v{ font-size: 14px; color: var(--white); text-align: right; max-width: 60%; line-height: 1.6; }
+
+/* nav buttons within form screens */
+.form-nav{
+  display:flex; align-items:center; gap: 22px; margin-top: 8px;
+}
+.btn-back{
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--grey);
+  border-bottom: 1px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+.btn-back:hover{ color: var(--white); border-color: var(--grey); }
+
+.btn-next{
+  display:inline-flex; align-items:center; gap: 10px;
+  background: var(--red);
+  color: var(--white);
+  border: none;
+  padding: 15px 30px;
+  font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
+  border-radius: 2px;
+  transition: background .2s, opacity .2s;
+}
+.btn-next:hover{ background: var(--red-bright); }
+.btn-next:disabled{ opacity: 0.3; cursor: not-allowed; background: var(--black3); }
+.btn-next svg{ width: 12px; height:12px; }
+
+.error-msg{
+  font-size: 12px; color: var(--red-bright); margin-top: -14px; margin-bottom: 20px; display:none;
+}
+.error-msg.show{ display:block; }
+
+/* ============================================================
+   CONFIRMATION SCREEN
+   ============================================================ */
+#screen-confirm .form-card{ text-align: center; max-width: 500px; }
+.confirm-icon{
+  width: 56px; height: 56px;
+  border: 1px solid var(--red);
+  border-radius: 50%;
+  display:flex; align-items:center; justify-content:center;
+  margin: 0 auto 30px;
+}
+.confirm-icon svg{ width: 20px; height:20px; }
+#screen-confirm h2{ margin-bottom: 18px; }
+#screen-confirm .hint{ margin-left:auto; margin-right:auto; }
+.confirm-ref{
+  margin-top: 30px;
+  font-size: 10.5px;
+  letter-spacing: 2px;
+  color: var(--grey-dim);
+  text-transform: uppercase;
+}
+.confirm-ref b{ color: var(--grey); }
+
+/* submitting state */
+.submitting .btn-next .label{ opacity: 0.5; }
+.spinner{
+  width: 12px; height: 12px;
+  border: 2px solid rgba(244,242,238,0.35);
+  border-top-color: var(--white);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  display: none;
+}
+.submitting .spinner{ display:inline-block; }
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+@media (max-width: 640px){
+  .choices{ grid-template-columns: 1fr; }
+  .hero-facts{ gap: 16px; }
+  .mark, .appno{ display:none; }
+  .screen{ padding: 100px 22px 60px; }
+}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<div class="loading-screen" id="loading-screen">
+  <div class="loading-logo">CTA</div>
+</div>
+
+<div class="mark">
+  <img class="mark-logo" src="cta-ring-logo.gif" alt="Circuit Training Academy" onerror="this.style.display='none'">
+  <div class="mark-text">CTA</div>
+</div>
+
+<div class="progress" id="progress"><div class="progress-fill" id="progress-fill"></div></div>
+<div class="step-label" id="step-label"></div>
+
+<div class="stage">
+
+  <!-- ============ SCREEN 0 - HERO ============ -->
+  <section class="screen active" id="screen-hero">
+    <div class="waves-bg" aria-hidden="true">
+      <svg class="wave-line wave-1" viewBox="0 0 2400 200" preserveAspectRatio="none">
+        <path d="M0,70 Q150,20 300,70 T600,70 T900,70 T1200,70 T1500,70 T1800,70 T2100,70 T2400,70"/>
+      </svg>
+      <svg class="wave-line wave-2" viewBox="0 0 2400 200" preserveAspectRatio="none">
+        <path d="M0,130 Q150,175 300,130 T600,130 T900,130 T1200,130 T1500,130 T1800,130 T2100,130 T2400,130"/>
+      </svg>
+      <svg class="wave-line wave-3" viewBox="0 0 2400 200" preserveAspectRatio="none">
+        <path d="M0,100 Q150,150 300,100 T600,100 T900,100 T1200,100 T1500,100 T1800,100 T2100,100 T2400,100"/>
+      </svg>
+    </div>
+    <div class="waves-overlay" aria-hidden="true">
+      <svg class="wave-line wave-accent" viewBox="0 0 2400 200" preserveAspectRatio="none">
+        <path d="M0,100 Q150,40 300,100 T600,100 T900,100 T1200,100 T1500,100 T1800,100 T2100,100 T2400,100"/>
+      </svg>
+    </div>
+    <div class="hero-content">
+      <div class="eyebrow">Circuit Training Academy</div>
+      <h1>Los Angeles.<br>One Day.<br><em>Application Only.</em></h1>
+      <p class="hero-sub">An in-person production intensive with AC13. Not open to the public. Places are offered - not sold.</p>
+      <div class="hero-facts">
+        <div class="hero-fact"><b>LA</b> - Location</div>
+        <div class="hero-fact"><b>1 Day</b> - In Person</div>
+        <div class="hero-fact spots-fact">
+          <span class="spots-odometer" id="spots-odometer">
+            <span class="od-digit"><span class="od-strip" id="od-tens"></span></span>
+            <span class="od-digit"><span class="od-strip" id="od-units"></span></span>
+          </span>
+          <span>- Spots Remaining</span>
+        </div>
+      </div>
+      <button class="btn-primary" id="btn-start">
+        Request Access
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 1 - IDENTITY ============ -->
+  <section class="screen" id="screen-identity">
+    <div class="form-card">
+      <div class="eyebrow faint">Application - Identity</div>
+      <h2>Who is<br>joining the circuit?</h2>
+      <p class="hint">Start with the basics. This is how we'll reach you if your application is accepted.</p>
+
+      <div class="field">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" placeholder="Your full name" autocomplete="name">
+      </div>
+      <div class="field with-prefix">
+        <label for="instagram">Instagram Handle</label>
+        <span class="prefix-at">@</span>
+        <input type="text" id="instagram" placeholder="yourhandle" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="you@email.com" autocomplete="email">
+      </div>
+      <div class="error-msg" id="error-identity">Please fill in your name, Instagram handle and a valid email.</div>
+
+      <div class="form-nav">
+        <a class="btn-back" data-back>Back</a>
+        <button class="btn-next" data-next>
+          Continue
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 2 - EXPERIENCE ============ -->
+  <section class="screen" id="screen-experience">
+    <div class="form-card">
+      <div class="eyebrow faint">Application - Vetting 1 of 4</div>
+      <h2>Where are you<br>right now?</h2>
+      <p class="hint">Be honest. This isn't a beginner's course, but it isn't gatekept either - we just need to know who's applying.</p>
+
+      <div class="field">
+        <label>How long have you been producing?</label>
+        <div class="choices single-col" id="choice-experience">
+          <button class="choice" data-value="0–6 months">0 – 6 months</button>
+          <button class="choice" data-value="6 months – 2 years">6 months – 2 years</button>
+          <button class="choice" data-value="2 – 5 years">2 – 5 years</button>
+          <button class="choice" data-value="5+ years">5+ years</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Primary DAW</label>
+        <div class="choices" id="choice-daw">
+          <button class="choice" data-value="Ableton">Ableton</button>
+          <button class="choice" data-value="FL Studio">FL Studio</button>
+          <button class="choice" data-value="Logic">Logic</button>
+          <button class="choice" data-value="Other">Other</button>
+        </div>
+      </div>
+      <div class="error-msg" id="error-experience">Please select your experience level and DAW.</div>
+
+      <div class="form-nav">
+        <a class="btn-back" data-back>Back</a>
+        <button class="btn-next" data-next>
+          Continue
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 3 - COMMITMENT ============ -->
+  <section class="screen" id="screen-commitment">
+    <div class="form-card">
+      <div class="eyebrow faint">Application - Vetting 2 of 4</div>
+      <h2>How serious<br>is this to you?</h2>
+      <p class="hint">This is an in-person, hands-on intensive - we're looking for people who will actually show up and do the work.</p>
+
+      <div class="field">
+        <label>Seriousness - how much of a turning point do you want this to be?</label>
+        <div class="slider-wrap">
+          <div class="slider-value" id="seriousness-value">5<span>/ 10</span></div>
+          <input type="range" id="seriousness" min="1" max="10" value="5" step="1">
+          <div class="slider-labels"><span>Just curious</span><span>Fully committed</span></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Can you commit to attending in person in LA, for the full day?</label>
+        <div class="choices" id="choice-attend">
+          <button class="choice" data-value="Yes">Yes, fully committed</button>
+          <button class="choice" data-value="No">No / Not sure yet</button>
+        </div>
+      </div>
+      <div class="error-msg" id="error-commitment">Please rate your seriousness and confirm attendance.</div>
+
+      <div class="form-nav">
+        <a class="btn-back" data-back>Back</a>
+        <button class="btn-next" data-next>
+          Continue
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 3B - CREATIVE IDENTITY ============ -->
+  <section class="screen" id="screen-creative">
+    <div class="form-card">
+      <div class="eyebrow faint">Application - Vetting 3 of 4</div>
+      <h2>Who are you<br>outside the music?</h2>
+      <p class="hint">Technique is learnable. Identity isn't. We want to know what actually makes you, you - before we ever hear a track.</p>
+
+      <div class="field">
+        <label for="vulnerable">Outside of the genre you currently focus on, what makes you vulnerable? Something you've loved since a kid, a passion or a hobby you identify with?</label>
+        <textarea id="vulnerable" maxlength="600" placeholder="Something you've loved since a kid, a passion or hobby that shapes how you see things..."></textarea>
+        <div class="char-count"><span id="vulnerable-count">0</span> / 600</div>
+      </div>
+      <div class="error-msg" id="error-creative">Please write at least a couple of sentences.</div>
+
+      <div class="form-nav">
+        <a class="btn-back" data-back>Back</a>
+        <button class="btn-next" data-next>
+          Continue
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 4 - MOTIVATION ============ -->
+  <section class="screen" id="screen-motivation">
+    <div class="form-card">
+      <div class="eyebrow faint">Application - Vetting 4 of 4</div>
+      <h2>Make your<br>case.</h2>
+      <p class="hint">Tell us why you should be one of the 20. What are you trying to break through? Be specific - generic answers don't get read twice.</p>
+
+      <div class="field">
+        <label for="why">Why you, why now</label>
+        <textarea id="why" maxlength="600" placeholder="I've been stuck on..."></textarea>
+        <div class="char-count"><span id="why-count">0</span> / 600</div>
+      </div>
+      <div class="error-msg" id="error-motivation">Please write at least a couple of sentences.</div>
+
+      <div class="form-nav">
+        <a class="btn-back" data-back>Back</a>
+        <button class="btn-next" data-next>
+          Review Application
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 5 - REVIEW ============ -->
+  <section class="screen" id="screen-review">
+    <div class="form-card">
+      <div class="eyebrow faint">Application - Final Review</div>
+      <h2>Before you<br>submit.</h2>
+      <p class="hint">Check the details below. Once submitted, your application goes straight to AC13 for review.</p>
+
+      <div class="review-list" id="review-list"></div>
+
+      <div class="form-nav">
+        <a class="btn-back" data-back>Back</a>
+        <button class="btn-next" id="btn-submit">
+          <span class="label">Submit Application</span>
+          <span class="spinner"></span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 6 - CONFIRMATION ============ -->
+  <section class="screen" id="screen-confirm">
+    <div class="form-card">
+      <div class="confirm-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#E8173B" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <div class="eyebrow">Application Received</div>
+      <h2>You're on<br>the list.</h2>
+      <p class="hint">Every application is reviewed personally. If you're a fit for the LA session, you'll hear back by email or Instagram within a few days.</p>
+      <div class="confirm-ref">Reference - <b id="confirm-ref">-</b></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ============================================================
+   CONFIG - edit these two values
+   ============================================================ */
+const CONFIG = {
+  // Paste your deployed Google Apps Script Web App URL here.
+  // See CTA_LA_AppsScript.gs for the script + deployment steps.
+  SHEET_ENDPOINT_URL: "https://script.google.com/macros/s/AKfycbzjSh01FSaNgm-XUTLCeBT_QfFx2WuB8ola4VNeLIWRUlPac9lzgGAK4eHlBEvxwhQtPQ/exec",
+};
+
+/* ---------- Spots-remaining odometer (counts down 20 -> 4) ---------- */
+(function initSpotsOdometer(){
+  const DIGIT_H = 13;
+  const START = 20;
+  const END = 4;
+
+  function buildStrip(strip){
+    for (let i = 0; i <= 9; i++){
+      const s = document.createElement('span');
+      s.textContent = i;
+      strip.appendChild(s);
+    }
+  }
+  function setDigit(strip, n){
+    strip.style.transform = 'translateY(' + (-n * DIGIT_H) + 'px)';
+  }
+
+  const tens = document.getElementById('od-tens');
+  const units = document.getElementById('od-units');
+  if (!tens || !units) return;
+
+  buildStrip(tens);
+  buildStrip(units);
+  setDigit(tens, Math.floor(START / 10));
+  setDigit(units, START % 10);
+
+  let value = START;
+  const totalSteps = START - END;
+  let step = 0;
+
+  function tick(){
+    if (value <= END) return;
+    value--;
+    setDigit(tens, Math.floor(value / 10));
+    setDigit(units, value % 10);
+    step++;
+    // decelerate as it approaches the final, scarce number
+    const progress = step / totalSteps;
+    const delay = 55 + progress * progress * 260;
+    setTimeout(tick, delay);
+  }
+  setTimeout(tick, 900);
+})();
+
+/* ---------- Application reference number ---------- */
+const appNum = String(Math.floor(1000 + Math.random() * 8999));
+
+/* ---------- Wizard state ---------- */
+const steps = ['screen-hero','screen-identity','screen-experience','screen-commitment','screen-creative','screen-motivation','screen-review','screen-confirm'];
+const stepTitles = { 'screen-identity':'Identity', 'screen-experience':'Experience', 'screen-commitment':'Commitment', 'screen-creative':'Creative Identity', 'screen-motivation':'Motivation', 'screen-review':'Review' };
+let current = 0;
+
+const answers = { fullName:'', instagram:'', email:'', experience:'', daw:'', seriousness:5, attend:'', vulnerable:'', why:'' };
+
+const progressEl = document.getElementById('progress');
+const progressFill = document.getElementById('progress-fill');
+const stepLabel = document.getElementById('step-label');
+
+/* ---------- Reveal - staggered fade-up for whichever screen is active ---------- */
+function playReveal(screenEl){
+  const container = screenEl.querySelector('.hero-content, .form-card');
+  if (!container) return;
+  Array.from(container.children).forEach((el, i) => {
+    el.classList.remove('reveal-play');
+    void el.offsetWidth; // force reflow so the animation restarts every visit
+    el.style.animationDelay = (i * 130) + 'ms';
+    el.classList.add('reveal-play');
+  });
+}
+
+function goTo(index){
+  document.getElementById(steps[current]).classList.remove('active');
+  current = index;
+  const id = steps[current];
+  const screenEl = document.getElementById(id);
+  screenEl.classList.add('active');
+  window.scrollTo(0,0);
+  playReveal(screenEl);
+
+  const formSteps = ['screen-identity','screen-experience','screen-commitment','screen-creative','screen-motivation','screen-review'];
+  const pos = formSteps.indexOf(id);
+  if (pos >= 0){
+    progressEl.classList.add('show');
+    stepLabel.classList.add('show');
+    progressFill.style.width = (((pos+1)/formSteps.length)*100) + '%';
+    stepLabel.innerHTML = 'Step <b>' + (pos+1) + '</b> / ' + formSteps.length + ' - ' + stepTitles[id];
+  } else {
+    progressEl.classList.remove('show');
+    stepLabel.classList.remove('show');
+  }
+}
+
+setTimeout(() => playReveal(document.getElementById(steps[current])), 1900);
+
+document.getElementById('btn-start').addEventListener('click', () => goTo(1));
+document.querySelectorAll('[data-back]').forEach(el => el.addEventListener('click', () => goTo(Math.max(0, current-1))));
+
+/* ---------- Choice buttons ---------- */
+function wireChoiceGroup(groupId, onSelect){
+  const group = document.getElementById(groupId);
+  group.querySelectorAll('.choice').forEach(btn => {
+    btn.addEventListener('click', () => {
+      group.querySelectorAll('.choice').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      onSelect(btn.dataset.value);
+    });
+  });
+}
+wireChoiceGroup('choice-experience', v => answers.experience = v);
+wireChoiceGroup('choice-daw', v => answers.daw = v);
+wireChoiceGroup('choice-attend', v => answers.attend = v);
+
+/* ---------- Seriousness slider ---------- */
+const slider = document.getElementById('seriousness');
+const sliderValue = document.getElementById('seriousness-value');
+slider.addEventListener('input', () => {
+  answers.seriousness = slider.value;
+  sliderValue.innerHTML = slider.value + '<span>/ 10</span>';
+});
+
+/* ---------- Why / vulnerable textarea char counts ---------- */
+const whyEl = document.getElementById('why');
+const whyCount = document.getElementById('why-count');
+whyEl.addEventListener('input', () => { whyCount.textContent = whyEl.value.length; });
+
+const vulnerableEl = document.getElementById('vulnerable');
+const vulnerableCount = document.getElementById('vulnerable-count');
+vulnerableEl.addEventListener('input', () => { vulnerableCount.textContent = vulnerableEl.value.length; });
+
+/* ---------- Step validation + advance ---------- */
+document.querySelectorAll('.screen [data-next]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const screenId = steps[current];
+
+    if (screenId === 'screen-identity'){
+      answers.fullName = document.getElementById('fullName').value.trim();
+      answers.instagram = document.getElementById('instagram').value.trim().replace(/^@/,'');
+      answers.email = document.getElementById('email').value.trim();
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(answers.email);
+      if (!answers.fullName || !answers.instagram || !emailOk){
+        document.getElementById('error-identity').classList.add('show');
+        return;
+      }
+      document.getElementById('error-identity').classList.remove('show');
+    }
+
+    if (screenId === 'screen-experience'){
+      if (!answers.experience || !answers.daw){
+        document.getElementById('error-experience').classList.add('show');
+        return;
+      }
+      document.getElementById('error-experience').classList.remove('show');
+    }
+
+    if (screenId === 'screen-commitment'){
+      if (!answers.attend){
+        document.getElementById('error-commitment').classList.add('show');
+        return;
+      }
+      document.getElementById('error-commitment').classList.remove('show');
+    }
+
+    if (screenId === 'screen-creative'){
+      answers.vulnerable = vulnerableEl.value.trim();
+      if (answers.vulnerable.length < 20){
+        document.getElementById('error-creative').classList.add('show');
+        return;
+      }
+      document.getElementById('error-creative').classList.remove('show');
+    }
+
+    if (screenId === 'screen-motivation'){
+      answers.why = whyEl.value.trim();
+      if (answers.why.length < 20){
+        document.getElementById('error-motivation').classList.add('show');
+        return;
+      }
+      document.getElementById('error-motivation').classList.remove('show');
+      buildReview();
+    }
+
+    goTo(current + 1);
+  });
+});
+
+/* ---------- Review screen ---------- */
+function buildReview(){
+  const rows = [
+    ['Full Name', answers.fullName],
+    ['Instagram', '@' + answers.instagram],
+    ['Email', answers.email],
+    ['Experience', answers.experience],
+    ['DAW', answers.daw],
+    ['Seriousness', answers.seriousness + ' / 10'],
+    ['Attending In Person', answers.attend],
+    ['Outside The Genre', answers.vulnerable],
+    ['Why', answers.why],
+  ];
+  const list = document.getElementById('review-list');
+  list.innerHTML = rows.map(r => `<div class="review-row"><div class="k">${r[0]}</div><div class="v">${r[1]}</div></div>`).join('');
+}
+
+/* ---------- Submit ---------- */
+document.getElementById('btn-submit').addEventListener('click', function(){
+  const btn = this;
+  btn.classList.add('submitting');
+  btn.disabled = true;
+
+  const payload = {
+    fullName: answers.fullName,
+    instagram: answers.instagram,
+    email: answers.email,
+    experience: answers.experience,
+    daw: answers.daw,
+    seriousness: answers.seriousness,
+    attend: answers.attend,
+    vulnerable: answers.vulnerable,
+    why: answers.why,
+    applicationRef: appNum,
+    source: 'CTA LA Black Access',
+  };
+
+  const finish = () => {
+    document.getElementById('confirm-ref').textContent = appNum;
+    goTo(steps.indexOf('screen-confirm'));
+  };
+
+  if (!CONFIG.SHEET_ENDPOINT_URL || CONFIG.SHEET_ENDPOINT_URL.includes('REPLACE_WITH')){
+    // No endpoint configured yet - still show confirmation so the flow can be demoed/tested.
+    console.warn('CTA BLACK: SHEET_ENDPOINT_URL not configured - application was NOT saved to a spreadsheet.', payload);
+    setTimeout(finish, 500);
+    return;
+  }
+
+  const body = new URLSearchParams(payload);
+  fetch(CONFIG.SHEET_ENDPOINT_URL, { method: 'POST', mode: 'no-cors', body })
+    .then(finish)
+    .catch(finish); // no-cors gives an opaque response either way - treat as sent
+});
+</script>
+</body>
+</html>
