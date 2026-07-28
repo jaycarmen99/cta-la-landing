@@ -158,7 +158,7 @@ input, textarea{ font-family: inherit; }
 }
 
 /* ---- Reveal / fade-in for text entering a screen ---- */
-.hero-content > *, .form-card > *, .about-card > *{ opacity: 0; }
+.hero-content > *, .form-card > *, .about-top > *{ opacity: 0; }
 @keyframes fadeUp{
   from{ opacity: 0; transform: translateY(18px); }
   to{ opacity: 1; transform: translateY(0); }
@@ -380,34 +380,22 @@ input, textarea{ font-family: inherit; }
 }
 .form-card .eyebrow{ margin-bottom: 16px; }
 
-#screen-about{ padding-left: 24px; padding-right: 24px; }
-.about-bg{
-  position: absolute; inset: 0; z-index: 0;
-  overflow: hidden;
+#screen-about{
+  padding: 0;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
 }
-.about-bg img{
-  width: 100%; height: 100%;
-  object-fit: cover;
-  object-position: center 35%;
-  filter: grayscale(35%) saturate(1.1);
-}
-.about-bg-gradient{
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(6,6,6,0.55) 0%, rgba(6,6,6,0.62) 40%, rgba(6,6,6,0.85) 100%);
-}
-.about-card{
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 480px;
+.about-top{
+  flex: 0 0 auto;
+  padding: 118px 24px 28px;
   text-align: center;
 }
-.about-card .eyebrow{ margin-bottom: 16px; }
-.about-card .hint{ text-align: left; }
+.about-top .eyebrow{ margin-bottom: 16px; }
 .about-portrait{
-  width: 130px;
-  height: 130px;
-  margin: 0 auto 26px;
+  width: 108px;
+  height: 108px;
+  margin: 0 auto 22px;
   border-radius: 50%;
   overflow: hidden;
   border: 1px solid var(--line);
@@ -422,9 +410,51 @@ input, textarea{ font-family: inherit; }
   font-size: 12.5px;
   color: var(--grey-dim);
   letter-spacing: 0.5px;
-  margin: -8px 0 22px;
+  margin: -8px 0 20px;
 }
-.form-card h2, .about-card h2{
+.about-bio{
+  font-size: 14.5px;
+  color: var(--grey);
+  line-height: 1.75;
+  max-width: 440px;
+  margin: 0 auto 28px;
+  text-align: center;
+}
+.about-top .form-nav{ justify-content: center; }
+
+.about-bottom{
+  flex: 1 1 auto;
+  position: relative;
+  min-height: 220px;
+  overflow: hidden;
+}
+.about-bottom img{
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  filter: grayscale(30%) saturate(1.1);
+}
+.about-bottom-gradient{
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg,
+    var(--black) 0%,
+    rgba(6,6,6,0.15) 22%,
+    rgba(6,6,6,0.1) 55%,
+    rgba(6,6,6,0.55) 82%,
+    var(--black) 100%);
+}
+.about-credential{
+  position: absolute;
+  left: 24px; right: 24px; bottom: 22px;
+  z-index: 1;
+  font-size: 12px;
+  color: var(--grey);
+  letter-spacing: 0.3px;
+  text-align: center;
+  line-height: 1.6;
+}
+.form-card h2, .about-top h2{
   font-family: var(--display);
   font-weight: 900;
   text-transform: uppercase;
@@ -700,19 +730,14 @@ input[type=range]::-webkit-slider-runnable-track{ height:2px; background: var(--
 
   <!-- ============ SCREEN 0B - ABOUT ============ -->
   <section class="screen" id="screen-about">
-    <div class="about-bg">
-      <img src="Rampage%20(1).jpg" alt="">
-      <div class="about-bg-gradient"></div>
-    </div>
-    <div class="about-card">
+    <div class="about-top">
       <div class="about-portrait">
         <img src="DSC06400%20(2).jpg" alt="AC13">
       </div>
       <div class="eyebrow faint">Meet Your Tutor</div>
       <h2>AC13</h2>
       <p class="about-role">Founder, Circuit Training Academy</p>
-      <p class="hint">AC13 has spent 8 years touring internationally in the DnB scene, and before that worked in artist development at SM Entertainment, one of the world's leading music companies. This isn't theory - it's active, current industry knowledge, passed on directly.</p>
-      <p class="hint">As seen at Rampage, Hospitality, Fabriclive, Boomtown, Reading &amp; Leeds, Glastonbury and Tomorrowland.</p>
+      <p class="about-bio">Over 10 years touring worldwide and making music with some of the biggest names in the scene, with releases on Universal Music, Hospital Records, RAM and Bassrush, before starting his own imprint, Alpha Circuit.</p>
       <div class="form-nav">
         <a class="btn-back" data-back>Back</a>
         <button class="btn-next" data-next>
@@ -720,6 +745,11 @@ input[type=range]::-webkit-slider-runnable-track{ height:2px; background: var(--
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </button>
       </div>
+    </div>
+    <div class="about-bottom">
+      <img src="Rampage%20(1).jpg" alt="">
+      <div class="about-bottom-gradient"></div>
+      <p class="about-credential">As seen at Rampage, Hospitality, Fabriclive, Boomtown, Reading &amp; Leeds, Glastonbury and Tomorrowland.</p>
     </div>
   </section>
 
@@ -1004,7 +1034,7 @@ const stepLabel = document.getElementById('step-label');
 
 /* ---------- Reveal - staggered fade-up for whichever screen is active ---------- */
 function playReveal(screenEl){
-  const container = screenEl.querySelector('.hero-content, .form-card, .about-card');
+  const container = screenEl.querySelector('.hero-content, .form-card, .about-top');
   if (!container) return;
   Array.from(container.children).forEach((el, i) => {
     el.classList.remove('reveal-play');
