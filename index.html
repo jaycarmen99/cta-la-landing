@@ -379,7 +379,35 @@ input, textarea{ font-family: inherit; }
   max-width: 560px;
 }
 .form-card .eyebrow{ margin-bottom: 16px; }
-.form-card h2{
+
+.about-card{
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+}
+.about-card .eyebrow{ margin-bottom: 16px; }
+.about-card .hint{ text-align: left; }
+.about-portrait{
+  width: 130px;
+  height: 130px;
+  margin: 0 auto 26px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+.about-portrait img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 15%;
+}
+.about-role{
+  font-size: 12.5px;
+  color: var(--grey-dim);
+  letter-spacing: 0.5px;
+  margin: -8px 0 22px;
+}
+.form-card h2, .about-card h2{
   font-family: var(--display);
   font-weight: 900;
   text-transform: uppercase;
@@ -653,6 +681,27 @@ input[type=range]::-webkit-slider-runnable-track{ height:2px; background: var(--
     </div>
   </section>
 
+  <!-- ============ SCREEN 0B - ABOUT ============ -->
+  <section class="screen" id="screen-about">
+    <div class="about-card">
+      <div class="about-portrait">
+        <img src="DSC06400%20(2).jpg" alt="AC13">
+      </div>
+      <div class="eyebrow faint">Meet Your Tutor</div>
+      <h2>AC13</h2>
+      <p class="about-role">Founder, Circuit Training Academy</p>
+      <p class="hint">AC13 has spent 8 years touring internationally in the DnB scene, and before that worked in artist development at SM Entertainment, one of the world's leading music companies. This isn't theory - it's active, current industry knowledge, passed on directly.</p>
+      <p class="hint">As seen at Rampage, Hospitality, Fabriclive, Boomtown, Reading &amp; Leeds, Glastonbury and Tomorrowland.</p>
+      <div class="form-nav">
+        <a class="btn-back" data-back>Back</a>
+        <button class="btn-next" data-next>
+          Continue
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ SCREEN 1 - IDENTITY ============ -->
   <section class="screen" id="screen-identity">
     <div class="form-card">
@@ -688,7 +737,7 @@ input[type=range]::-webkit-slider-runnable-track{ height:2px; background: var(--
   <!-- ============ SCREEN 2 - EXPERIENCE ============ -->
   <section class="screen" id="screen-experience">
     <div class="form-card">
-      <div class="eyebrow faint">Application - Vetting 1 of 4</div>
+      <div class="eyebrow faint">Application - Vetting 1 of 5</div>
       <h2>Where are you<br>right now?</h2>
       <p class="hint">Be honest. This isn't a beginner's course, but it isn't gatekept either - we just need to know who's applying.</p>
 
@@ -726,7 +775,7 @@ input[type=range]::-webkit-slider-runnable-track{ height:2px; background: var(--
   <!-- ============ SCREEN 3 - COMMITMENT ============ -->
   <section class="screen" id="screen-commitment">
     <div class="form-card">
-      <div class="eyebrow faint">Application - Vetting 2 of 4</div>
+      <div class="eyebrow faint">Application - Vetting 2 of 5</div>
       <h2>How serious<br>is this to you?</h2>
       <p class="hint">This is an in-person, hands-on intensive - we're looking for people who will actually show up and do the work.</p>
 
@@ -762,7 +811,7 @@ input[type=range]::-webkit-slider-runnable-track{ height:2px; background: var(--
   <!-- ============ SCREEN 3B - CREATIVE IDENTITY ============ -->
   <section class="screen" id="screen-creative">
     <div class="form-card">
-      <div class="eyebrow faint">Application - Vetting 3 of 4</div>
+      <div class="eyebrow faint">Application - Vetting 3 of 5</div>
       <h2>Who are you<br>outside the music?</h2>
       <p class="hint">Technique is learnable. Identity isn't. We want to know what actually makes you, you - before we ever hear a track.</p>
 
@@ -786,7 +835,7 @@ input[type=range]::-webkit-slider-runnable-track{ height:2px; background: var(--
   <!-- ============ SCREEN 4 - MOTIVATION ============ -->
   <section class="screen" id="screen-motivation">
     <div class="form-card">
-      <div class="eyebrow faint">Application - Vetting 4 of 4</div>
+      <div class="eyebrow faint">Application - Vetting 4 of 5</div>
       <h2>Make your<br>case.</h2>
       <p class="hint">Tell us why you should be one of the 20. What are you trying to break through? Be specific - generic answers don't get read twice.</p>
 
@@ -796,6 +845,29 @@ input[type=range]::-webkit-slider-runnable-track{ height:2px; background: var(--
         <div class="char-count"><span id="why-count">0</span> / 600</div>
       </div>
       <div class="error-msg" id="error-motivation">Please write at least a couple of sentences.</div>
+
+      <div class="form-nav">
+        <a class="btn-back" data-back>Back</a>
+        <button class="btn-next" data-next>
+          Continue
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN 4B - TRACK SUBMISSION ============ -->
+  <section class="screen" id="screen-track">
+    <div class="form-card">
+      <div class="eyebrow faint">Application - Vetting 5 of 5</div>
+      <h2>Show us<br>your work.</h2>
+      <p class="hint">Submit one track for consideration. A handful of pre-vetted tracks are picked for live, in-depth feedback during the session. Private link only, please - SoundCloud (private/unlisted) or Dropbox. No public links.</p>
+
+      <div class="field">
+        <label for="trackLink">Track Link</label>
+        <input type="url" id="trackLink" placeholder="https://soundcloud.com/... or https://dropbox.com/..." autocomplete="off">
+      </div>
+      <div class="error-msg" id="error-track">Please submit a private SoundCloud or Dropbox link.</div>
 
       <div class="form-nav">
         <a class="btn-back" data-back>Back</a>
@@ -899,11 +971,11 @@ const CONFIG = {
 const appNum = String(Math.floor(1000 + Math.random() * 8999));
 
 /* ---------- Wizard state ---------- */
-const steps = ['screen-hero','screen-identity','screen-experience','screen-commitment','screen-creative','screen-motivation','screen-review','screen-confirm'];
-const stepTitles = { 'screen-identity':'Identity', 'screen-experience':'Experience', 'screen-commitment':'Commitment', 'screen-creative':'Creative Identity', 'screen-motivation':'Motivation', 'screen-review':'Review' };
+const steps = ['screen-hero','screen-about','screen-identity','screen-experience','screen-commitment','screen-creative','screen-motivation','screen-track','screen-review','screen-confirm'];
+const stepTitles = { 'screen-identity':'Identity', 'screen-experience':'Experience', 'screen-commitment':'Commitment', 'screen-creative':'Creative Identity', 'screen-motivation':'Motivation', 'screen-track':'Track Submission', 'screen-review':'Review' };
 let current = 0;
 
-const answers = { fullName:'', instagram:'', email:'', experience:'', daw:'', seriousness:5, attend:'', vulnerable:'', why:'' };
+const answers = { fullName:'', instagram:'', email:'', experience:'', daw:'', seriousness:5, attend:'', vulnerable:'', why:'', trackLink:'' };
 
 const progressEl = document.getElementById('progress');
 const progressFill = document.getElementById('progress-fill');
@@ -930,7 +1002,7 @@ function goTo(index){
   window.scrollTo(0,0);
   playReveal(screenEl);
 
-  const formSteps = ['screen-identity','screen-experience','screen-commitment','screen-creative','screen-motivation','screen-review'];
+  const formSteps = ['screen-identity','screen-experience','screen-commitment','screen-creative','screen-motivation','screen-track','screen-review'];
   const pos = formSteps.indexOf(id);
   if (pos >= 0){
     progressEl.classList.add('show');
@@ -1029,6 +1101,16 @@ document.querySelectorAll('.screen [data-next]').forEach(btn => {
         return;
       }
       document.getElementById('error-motivation').classList.remove('show');
+    }
+
+    if (screenId === 'screen-track'){
+      answers.trackLink = document.getElementById('trackLink').value.trim();
+      const isPrivateLink = /^(https?:\/\/)(www\.)?(soundcloud\.com|dropbox\.com)\//i.test(answers.trackLink);
+      if (!isPrivateLink){
+        document.getElementById('error-track').classList.add('show');
+        return;
+      }
+      document.getElementById('error-track').classList.remove('show');
       buildReview();
     }
 
@@ -1048,6 +1130,7 @@ function buildReview(){
     ['Attending In Person', answers.attend],
     ['Outside The Genre', answers.vulnerable],
     ['Why', answers.why],
+    ['Track Link', answers.trackLink],
   ];
   const list = document.getElementById('review-list');
   list.innerHTML = rows.map(r => `<div class="review-row"><div class="k">${r[0]}</div><div class="v">${r[1]}</div></div>`).join('');
@@ -1069,6 +1152,7 @@ document.getElementById('btn-submit').addEventListener('click', function(){
     attend: answers.attend,
     vulnerable: answers.vulnerable,
     why: answers.why,
+    trackLink: answers.trackLink,
     applicationRef: appNum,
     source: 'CTA LA Black Access',
   };
