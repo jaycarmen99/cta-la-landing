@@ -709,7 +709,7 @@ input[type=range]::-webkit-slider-runnable-track{ height:2px; background: var(--
     <div class="hero-content">
       <div class="eyebrow">Circuit Training Academy</div>
       <h1>Los Angeles.<br>One Day.<br><em>Application Only.</em></h1>
-      <p class="hero-sub">An in-person production intensive with AC13. Not open to the public. Places are offered - not sold.</p>
+      <p class="hero-sub">An in-person production intensive with AC13. Not open to the public. Places are given to those accepted, not sold to anyone who asks.</p>
       <div class="hero-facts">
         <div class="hero-fact"><b>LA</b> - Location</div>
         <div class="hero-fact"><b>1 Day</b> - In Person</div>
@@ -846,8 +846,16 @@ input[type=range]::-webkit-slider-runnable-track{ height:2px; background: var(--
           <button class="choice" data-value="No">No / Not sure yet</button>
         </div>
       </div>
+      <div class="field">
+        <label>Morning or evening session?</label>
+        <div class="choices" id="choice-timeslot">
+          <button class="choice" data-value="Morning">Morning</button>
+          <button class="choice" data-value="Evening">Evening</button>
+          <button class="choice" data-value="Either">Either works</button>
+        </div>
+      </div>
       <p class="fee-note">This is a paid intensive. Investment details are shared with accepted applicants.</p>
-      <div class="error-msg" id="error-commitment">Please rate your seriousness and confirm attendance.</div>
+      <div class="error-msg" id="error-commitment">Please rate your seriousness, confirm attendance, and pick a session.</div>
 
       <div class="form-nav">
         <a class="btn-back" data-back>Back</a>
@@ -1026,7 +1034,7 @@ const steps = ['screen-hero','screen-about','screen-identity','screen-experience
 const stepTitles = { 'screen-identity':'Identity', 'screen-experience':'Experience', 'screen-commitment':'Commitment', 'screen-creative':'Creative Identity', 'screen-motivation':'Motivation', 'screen-track':'Track Submission', 'screen-review':'Review' };
 let current = 0;
 
-const answers = { fullName:'', instagram:'', email:'', experience:'', daw:'', seriousness:5, attend:'', vulnerable:'', why:'', trackLink:'' };
+const answers = { fullName:'', instagram:'', email:'', experience:'', daw:'', seriousness:5, attend:'', timeslot:'', vulnerable:'', why:'', trackLink:'' };
 
 const progressEl = document.getElementById('progress');
 const progressFill = document.getElementById('progress-fill');
@@ -1085,6 +1093,7 @@ function wireChoiceGroup(groupId, onSelect){
 wireChoiceGroup('choice-experience', v => answers.experience = v);
 wireChoiceGroup('choice-daw', v => answers.daw = v);
 wireChoiceGroup('choice-attend', v => answers.attend = v);
+wireChoiceGroup('choice-timeslot', v => answers.timeslot = v);
 
 /* ---------- Seriousness slider ---------- */
 const slider = document.getElementById('seriousness');
@@ -1129,7 +1138,7 @@ document.querySelectorAll('.screen [data-next]').forEach(btn => {
     }
 
     if (screenId === 'screen-commitment'){
-      if (!answers.attend){
+      if (!answers.attend || !answers.timeslot){
         document.getElementById('error-commitment').classList.add('show');
         return;
       }
@@ -1179,6 +1188,7 @@ function buildReview(){
     ['DAW', answers.daw],
     ['Seriousness', answers.seriousness + ' / 10'],
     ['Attending In Person', answers.attend],
+    ['Session Preference', answers.timeslot],
     ['Outside The Genre', answers.vulnerable],
     ['Why', answers.why],
     ['Track Link', answers.trackLink],
@@ -1201,6 +1211,7 @@ document.getElementById('btn-submit').addEventListener('click', function(){
     daw: answers.daw,
     seriousness: answers.seriousness,
     attend: answers.attend,
+    timeslot: answers.timeslot,
     vulnerable: answers.vulnerable,
     why: answers.why,
     trackLink: answers.trackLink,
