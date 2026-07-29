@@ -753,6 +753,32 @@ input[type=range]::-webkit-slider-runnable-track{ height:2px; background: var(--
     </div>
   </section>
 
+  <!-- ============ SCREEN 0C - SESSION TIMESLOT ============ -->
+  <section class="screen" id="screen-timeslot">
+    <div class="form-card">
+      <div class="eyebrow faint">Application - Session</div>
+      <h2>Morning or<br>evening?</h2>
+      <p class="hint">We're running up to two sessions on August 24th. Let us know which works best for you.</p>
+
+      <div class="field">
+        <div class="choices single-col" id="choice-timeslot">
+          <button class="choice" data-value="Morning">Morning session</button>
+          <button class="choice" data-value="Evening">Evening session</button>
+          <button class="choice" data-value="Either">Either works for me</button>
+        </div>
+      </div>
+      <div class="error-msg" id="error-timeslot">Please pick a session.</div>
+
+      <div class="form-nav">
+        <a class="btn-back" data-back>Back</a>
+        <button class="btn-next" data-next>
+          Continue
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ SCREEN 1 - IDENTITY ============ -->
   <section class="screen" id="screen-identity">
     <div class="form-card">
@@ -846,16 +872,8 @@ input[type=range]::-webkit-slider-runnable-track{ height:2px; background: var(--
           <button class="choice" data-value="No">No / Not sure yet</button>
         </div>
       </div>
-      <div class="field">
-        <label>Morning or evening session?</label>
-        <div class="choices" id="choice-timeslot">
-          <button class="choice" data-value="Morning">Morning</button>
-          <button class="choice" data-value="Evening">Evening</button>
-          <button class="choice" data-value="Either">Either works</button>
-        </div>
-      </div>
       <p class="fee-note">This is a paid intensive. Investment details are shared with accepted applicants.</p>
-      <div class="error-msg" id="error-commitment">Please rate your seriousness, confirm attendance, and pick a session.</div>
+      <div class="error-msg" id="error-commitment">Please rate your seriousness and confirm attendance.</div>
 
       <div class="form-nav">
         <a class="btn-back" data-back>Back</a>
@@ -1030,8 +1048,8 @@ const CONFIG = {
 const appNum = String(Math.floor(1000 + Math.random() * 8999));
 
 /* ---------- Wizard state ---------- */
-const steps = ['screen-hero','screen-about','screen-identity','screen-experience','screen-commitment','screen-creative','screen-motivation','screen-track','screen-review','screen-confirm'];
-const stepTitles = { 'screen-identity':'Identity', 'screen-experience':'Experience', 'screen-commitment':'Commitment', 'screen-creative':'Creative Identity', 'screen-motivation':'Motivation', 'screen-track':'Track Submission', 'screen-review':'Review' };
+const steps = ['screen-hero','screen-about','screen-timeslot','screen-identity','screen-experience','screen-commitment','screen-creative','screen-motivation','screen-track','screen-review','screen-confirm'];
+const stepTitles = { 'screen-timeslot':'Session', 'screen-identity':'Identity', 'screen-experience':'Experience', 'screen-commitment':'Commitment', 'screen-creative':'Creative Identity', 'screen-motivation':'Motivation', 'screen-track':'Track Submission', 'screen-review':'Review' };
 let current = 0;
 
 const answers = { fullName:'', instagram:'', email:'', experience:'', daw:'', seriousness:5, attend:'', timeslot:'', vulnerable:'', why:'', trackLink:'' };
@@ -1061,7 +1079,7 @@ function goTo(index){
   window.scrollTo(0,0);
   playReveal(screenEl);
 
-  const formSteps = ['screen-identity','screen-experience','screen-commitment','screen-creative','screen-motivation','screen-track','screen-review'];
+  const formSteps = ['screen-timeslot','screen-identity','screen-experience','screen-commitment','screen-creative','screen-motivation','screen-track','screen-review'];
   const pos = formSteps.indexOf(id);
   if (pos >= 0){
     progressEl.classList.add('show');
@@ -1137,8 +1155,16 @@ document.querySelectorAll('.screen [data-next]').forEach(btn => {
       document.getElementById('error-experience').classList.remove('show');
     }
 
+    if (screenId === 'screen-timeslot'){
+      if (!answers.timeslot){
+        document.getElementById('error-timeslot').classList.add('show');
+        return;
+      }
+      document.getElementById('error-timeslot').classList.remove('show');
+    }
+
     if (screenId === 'screen-commitment'){
-      if (!answers.attend || !answers.timeslot){
+      if (!answers.attend){
         document.getElementById('error-commitment').classList.add('show');
         return;
       }
