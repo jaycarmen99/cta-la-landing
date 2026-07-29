@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CTA BLACK - Los Angeles Application</title>
+<title>CTA - Los Angeles Application</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +11,7 @@
 
 <style>
 /* ============================================================
-   CTA BLACK - LA Application
+   CTA - LA Application
    Edit the CONFIG block at the bottom of this file (search
    "CONFIG") to set your Spline scene URL and Apps Script endpoint.
    ============================================================ */
@@ -1205,7 +1205,7 @@ document.getElementById('btn-submit').addEventListener('click', function(){
     why: answers.why,
     trackLink: answers.trackLink,
     applicationRef: appNum,
-    source: 'CTA LA Black Access',
+    source: 'CTA LA Application',
   };
 
   const finish = () => {
@@ -1215,7 +1215,7 @@ document.getElementById('btn-submit').addEventListener('click', function(){
 
   if (!CONFIG.SHEET_ENDPOINT_URL || CONFIG.SHEET_ENDPOINT_URL.includes('REPLACE_WITH')){
     // No endpoint configured yet - still show confirmation so the flow can be demoed/tested.
-    console.warn('CTA BLACK: SHEET_ENDPOINT_URL not configured - application was NOT saved to a spreadsheet.', payload);
+    console.warn('CTA: SHEET_ENDPOINT_URL not configured - application was NOT saved to a spreadsheet.', payload);
     setTimeout(finish, 500);
     return;
   }
