@@ -1191,7 +1191,7 @@ document.querySelectorAll('.screen [data-next]').forEach(btn => {
 
     if (screenId === 'screen-track'){
       answers.trackLink = document.getElementById('trackLink').value.trim();
-      const isPrivateLink = /^(https?:\/\/)(www\.)?(soundcloud\.com|dropbox\.com)\//i.test(answers.trackLink);
+      const isPrivateLink = /^https?:\/\/(www\.soundcloud\.com|on\.soundcloud\.com|soundcloud\.com|snd\.sc|www\.dropbox\.com|dropbox\.com)\//i.test(answers.trackLink);
       if (!isPrivateLink){
         document.getElementById('error-track').classList.add('show');
         return;
